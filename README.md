@@ -57,22 +57,22 @@ Linux Control Node (Ubuntu/Debian recommended) with network access to the manage
 
 Installation
 Clone the repository:
-
+```
 git clone [https://github.com/](https://github.com/)wmateusz1212-cell/cisco-dmvpn-automation.git
 cd cisco-dmvpn-automation
-
+```
 Install dependencies:
 # System dependencies for Python crypto libraries
-sudo apt update && sudo apt install python3-paramiko sshpass -y
+`sudo apt update && sudo apt install python3-paramiko sshpass -y`
 
 # Python dependencies
-pip3 install ansible netmiko
+`pip3 install ansible netmiko`
 
 # Run the Validation Playbook:
-ansible-playbook playbooks/site.yaml
+`ansible-playbook playbooks/site.yaml`
 
 📝 Sample Output (Report)
-The playbook generates granular reports in the reports/ directory:
+`The playbook generates granular reports in the reports/ directory:`
 
 ```
 =======================================================
