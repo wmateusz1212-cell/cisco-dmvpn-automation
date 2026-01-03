@@ -6,6 +6,8 @@
 ![Architecture](https://img.shields.io/badge/Architecture-Dual_Hub_DMVPN-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
+infra.png
+
 ## 📋 Project Overview
 This project demonstrates a production-grade implementation of a **Dual Hub DMVPN Phase 3** architecture, integrated with a modern **NetDevOps automation pipeline**.
 
