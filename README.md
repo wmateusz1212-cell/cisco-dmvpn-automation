@@ -51,6 +51,8 @@ The control plane is managed via an **Ubuntu Control Node** running **Ansible**.
 │   └── spoke1_config_2026-01-03_22-22-38.cfg
 │   └── spoke2_config_2026-01-03_22-22-38.cfg
 │   └── spoke3_config_2026-01-03_22-22-38.cfg
+├── Asset/
+│   └── Infra.png
 ├── inventory/
 │   └── hosts.yaml       # Infrastructure definition and connection variables
 ├── playbooks/
