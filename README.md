@@ -44,6 +44,13 @@ The control plane is managed via an **Ubuntu Control Node** running **Ansible**.
 
 ```text
 .
+├── Devices_config/
+│   └── hub1_config_2026-01-03_22-22-38.cfg
+│   └── hub2_config_2026-01-03_22-22-38.cfg
+│   └── router_isp_config_2026-01-03_22-22-38.cfg
+│   └── spoke1_config_2026-01-03_22-22-38.cfg
+│   └── spoke2_config_2026-01-03_22-22-38.cfg
+│   └── spoke3_config_2026-01-03_22-22-38.cfg
 ├── inventory/
 │   └── hosts.yaml       # Infrastructure definition and connection variables
 ├── playbooks/
