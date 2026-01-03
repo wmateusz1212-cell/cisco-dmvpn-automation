@@ -55,20 +55,20 @@ Prerequisites
 Cisco CML, GNS3, or EVE-NG environment with CSR1000v/IOSv images.
 Linux Control Node (Ubuntu/Debian recommended) with network access to the management plane.
 
-Installation
+# Installation
 Clone the repository:
 ```
 git clone [https://github.com/](https://github.com/)wmateusz1212-cell/cisco-dmvpn-automation.git
 cd cisco-dmvpn-automation
 ```
-Install dependencies:
-# System dependencies for Python crypto libraries
+# Install dependencies:
+System dependencies for Python crypto libraries
 `sudo apt update && sudo apt install python3-paramiko sshpass -y`
 
-# Python dependencies
+Python dependencies
 `pip3 install ansible netmiko`
 
-# Run the Validation Playbook:
+Run the Validation Playbook:
 `ansible-playbook playbooks/site.yaml`
 
 📝 Sample Output (Report)
