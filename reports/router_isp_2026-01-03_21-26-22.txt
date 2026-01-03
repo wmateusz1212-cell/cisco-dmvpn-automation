@@ -1,0 +1,20 @@
+=======================================================
+REPORT FOR HOST: router_isp
+DATE: 2026-01-03T21:26:22+01:00
+=======================================================
+
+[1] DEVICE INFO
+Model: Unknown
+Serial: Unknown
+IOS Version: Unknown
+
+-------------------------------------------------------
+[2] DMVPN STATUS
+N/A (Not a DMVPN node or command failed)
+
+-------------------------------------------------------
+[3] BGP SESSION STATUS
+N/A (BGP not configured)
+
+=======================================================
+END OF REPORT

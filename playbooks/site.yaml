@@ -1,0 +1,97 @@
+---
+- name: Network Validation & Reporting
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+  
+  vars:
+    report_dir: "../reports"
+    # Używamy lookup 'pipe', aby pobrać datę bezpośrednio z powłoki Linuxa
+    # To omija problemy z hostvars i gather_facts
+    date_day: "{{ lookup('pipe', 'date +%Y-%m-%d') }}"
+    date_time: "{{ lookup('pipe', 'date +%H-%M-%S') }}"
+    date_iso: "{{ lookup('pipe', 'date -Iseconds') }}"
+
+  pre_tasks:
+    - name: Create local report directory
+      ansible.builtin.file:
+        path: "{{ report_dir }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+
+  tasks:
+    - name: Execute Operational Checks
+      block:
+        # 1. Sprawdzenie dostępności (Ping/SSH)
+        - name: Check SSH Reachability (Facts Gathering)
+          cisco.ios.ios_facts:
+            gather_subset: min
+          register: device_facts
+          # Paramiko timeout fix dla wolnych routerów
+          vars:
+            ansible_command_timeout: 60
+
+        # 2. Pobranie statusu DMVPN (Tylko Huby i Spoke'i)
+        - name: Collect DMVPN Status
+          cisco.ios.ios_command:
+            commands: "show dmvpn"
+          register: dmvpn_output
+          when: "'isp' not in group_names"
+
+        # 3. Pobranie statusu BGP
+        - name: Collect BGP Summary
+          cisco.ios.ios_command:
+            commands: "show ip bgp summary"
+          register: bgp_output
+          when: "'isp' not in group_names"
+
+        # 4. Generowanie Raportu
+        - name: Save Compliance Report to File
+          ansible.builtin.copy:
+            content: |
+              =======================================================
+              REPORT FOR HOST: {{ inventory_hostname }}
+              DATE: {{ date_iso }}
+              =======================================================
+              
+              [1] DEVICE INFO
+              Model: {{ device_facts.ansible_net_model | default('Unknown') }}
+              Serial: {{ device_facts.ansible_net_serialnum | default('Unknown') }}
+              IOS Version: {{ device_facts.ansible_net_version | default('Unknown') }}
+
+              -------------------------------------------------------
+              [2] DMVPN STATUS
+              {% if dmvpn_output.stdout is defined and dmvpn_output.stdout %}
+              {{ dmvpn_output.stdout[0] }}
+              {% else %}
+              N/A (Not a DMVPN node or command failed)
+              {% endif %}
+
+              -------------------------------------------------------
+              [3] BGP SESSION STATUS
+              {% if bgp_output.stdout is defined and bgp_output.stdout %}
+              {{ bgp_output.stdout[0] }}
+              
+              Analysis:
+              {% if "Active" in bgp_output.stdout[0] or "Idle" in bgp_output.stdout[0] %}
+              [WARNING] BGP Sessions NOT fully established (Active/Idle state detected)
+              {% else %}
+              [OK] BGP Sessions appear healthy (check numbers above)
+              {% endif %}
+              {% else %}
+              N/A (BGP not configured)
+              {% endif %}
+              
+              =======================================================
+              END OF REPORT
+            dest: "{{ report_dir }}/{{ inventory_hostname }}_{{ date_day }}_{{ date_time }}.txt"
+          delegate_to: localhost
+
+      rescue:
+        - name: Log Connectivity Failure
+          ansible.builtin.copy:
+            content: "CRITICAL FAILURE: Could not connect to {{ inventory_hostname }} via SSH."
+            dest: "{{ report_dir }}/{{ inventory_hostname }}_FAILED.txt"
+          delegate_to: localhost
